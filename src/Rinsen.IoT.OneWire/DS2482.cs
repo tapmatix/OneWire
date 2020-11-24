@@ -63,7 +63,17 @@ namespace Rinsen.IoT.OneWire
 
         public bool OneWireReset()
         {
-            return Channels.First().Reset();
+            //Clear list to allow for detection of removed devices and avoid duplicates
+            _oneWireDevices.Clear();
+            // Clear initialized flag to ensure that the next call to GetDevices initiates a new search
+            _initialized = false;
+            // As OneWireReset does not take a channel identifier as parameter, we have to reset all channels.
+            // Unfortunately this forces us to aggregate the result to avoid breaking the interface.
+            // While this is ok for the 1 channel version, it is not helpful dealing with the 8 channel chip.
+            // I would suggest to change the interface in the long run.
+
+            //This returns true if devices where found on at least one channel.
+            return Channels.Select(c => c.Reset()).Any();
         }
 
         public void Dispose()
