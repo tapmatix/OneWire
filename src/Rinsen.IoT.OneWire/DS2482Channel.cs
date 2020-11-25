@@ -18,10 +18,6 @@ namespace Rinsen.IoT.OneWire
         private readonly DS2482 _ds2482Device;
         private readonly OneWireChannel _channel;
 
-        // global search state
-        //public byte[] DeviceAddress { get; private set; } = new byte[8];
-        
-
         public DS2482Channel(DS2482 ds2482, OneWireChannel channel)
         {
             _ds2482Device = ds2482;
@@ -41,30 +37,6 @@ namespace Rinsen.IoT.OneWire
             {
                 oneWireDevices.Add(AddOneWireDevice(oneWireDeviceTypes, deviceAddress));
             }
-
-            //if (deviceDetected)
-            //{
-            //    var result = true;
-            //    do
-            //    {
-            //        if (first)
-            //        {
-            //            first = false;
-            //            result = OneWireFirst();
-            //        }
-            //        else
-            //        {
-            //            result = OnoWireNext();
-            //        }
-
-            //        if (result)
-            //        {
-                        
-            //        }
-
-            //    } while (result);
-            //}
-
             return oneWireDevices;
         }
 
@@ -74,7 +46,6 @@ namespace Rinsen.IoT.OneWire
             if (oneWireDeviceTypes.Any(k => k.Key == deviceAddress[0]))
             {
                 device = (IOneWireDevice)Activator.CreateInstance(oneWireDeviceTypes.First(k => k.Key == deviceAddress[0]).Value);
-                
             }
             else
             {
@@ -212,7 +183,7 @@ namespace Rinsen.IoT.OneWire
             var stopWatch = new Stopwatch();
             do
             {
-                if (stopWatch.ElapsedMilliseconds > 1)
+                if (stopWatch.ElapsedMilliseconds > 100)
                 {
                     throw new InvalidOperationException("One Wire bus busy for too long");
                 }

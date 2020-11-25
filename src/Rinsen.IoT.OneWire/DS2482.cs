@@ -73,7 +73,19 @@ namespace Rinsen.IoT.OneWire
             // I would suggest to change the interface in the long run.
 
             //This returns true if devices where found on at least one channel.
-            return Channels.Select(c => c.Reset()).Any();
+            //return Channels.Select(c => c.Reset()).Any();
+            return Channels.First().Reset();
+        }
+
+        public void EnableStrongPullup()
+        {
+            var configuration = new byte();
+            configuration |= 1 << 2;
+            configuration |= 1 << 7;
+            configuration |= 1 << 5;
+            configuration |= 1 << 4;
+
+            I2cDevice.Write(new byte[] { FunctionCommand.WRITE_CONFIGURATION, configuration });
         }
 
         public void Dispose()
